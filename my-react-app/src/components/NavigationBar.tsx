@@ -32,7 +32,7 @@ const NavigationBar = () => {
 
                     {isAuthenticated() ? (
                         <div>
-                            <p>{ loggedUser?.role }</p>
+                            <span style={{ marginRight: 20, color: '#fff'}}>{ loggedUser?.name }</span>
                             <Button variant="danger" onClick={() => logout(navigate)}>Logout</Button>
                         </div>
                     ) : (

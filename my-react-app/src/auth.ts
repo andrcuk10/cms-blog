@@ -3,6 +3,7 @@ import type { NavigateFunction } from "react-router-dom";
 export interface User {
     role: string
     userId: string
+    name: string
 }
 
 export let loggedUser: User | null = null
@@ -17,7 +18,7 @@ export const isAuthenticated = () => {
         if (parts.length !== 3) return false; // JWT mora imati tri dela
 
         const payload = JSON.parse(atob(parts[1])); // Dekodiramo payload
-        loggedUser = { role: payload.role, userId: payload.userId }
+        loggedUser = { role: payload.role, userId: payload.userId, name: payload.name }
 
         return true;
     } catch (error) {

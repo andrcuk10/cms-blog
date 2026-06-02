@@ -58,7 +58,8 @@ export const updateCategory = async (req: Request, res: Response) => {
     // Category name mora da bude jedinstven
     if(name) {
         const checkCategory = await categoryRepository.findOne({ where: { name } })
-        if(checkCategory) return res.status(400).json({ code: 'DUPLICATE_CATEGORY' })
+        if(checkCategory && checkCategory.id !== req.params.id) 
+            return res.status(400).json({ code: 'DUPLICATE_CATEGORY' })
         category.name = name
     }
     if(description) category.description = description

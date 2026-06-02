@@ -5,8 +5,8 @@ import { UserRole } from '../entities/User';
 const JWT_SECRET = "supertajnikljuc";
 
 // Funkcija za generisanje JWT tokena
-export const generateToken = (userId: string, role: UserRole) => {
-  return jwt.sign({ userId, role }, JWT_SECRET);
+export const generateToken = (userId: string, role: UserRole, name: string) => {
+  return jwt.sign({ userId, role, name }, JWT_SECRET);
 };
 
 // Funkcija za verifikaciju JWT tokena

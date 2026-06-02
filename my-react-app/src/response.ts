@@ -15,3 +15,7 @@ export interface CategoryListingPage {
     categories: CategoryDTO[]
     meta: metaData
 }
+
+export interface NewCategoryRes {
+    category_id: string
+}

@@ -18,6 +18,6 @@ export const login = async (req: Request, res: Response) => {
         return res.status(400).json({ code: 'INCORRECT_CREDENTIALS' })
     }
 
-    const token = generateToken(user.id, user.role)
+    const token = generateToken(user.id, user.role, `${user.first_name} ${user.last_name}`)
     res.json({ token })
 }
