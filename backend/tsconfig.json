@@ -1,0 +1,19 @@
+{
+  "version": "2.4.2",
+  "compilerOptions": {
+    "lib": ["es5", "es6"],
+    "target": "es6",
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false, // da se ne crvene modeli(entiteti)
+    "sourceMap": true,
+    "rootDir": "./src", // Lokacija TypeScript fajlova
+    "outDir": "./dist" // Lokacija gde će se generisati JavaScript fajlovi
+  },
+  "include": ["src/**/*"], // Uključuje sve fajlove u src direktorijumu
+  "exclude": ["node_modules"],
+  "files": ["./src/express.d.ts"]
+}
