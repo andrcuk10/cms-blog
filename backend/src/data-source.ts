@@ -7,7 +7,7 @@ import { Tag } from './entities/Tag'
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: "192.168.1.196",
+    host: "192.168.1.226",
     port: 3306,
     username: "andrija",
     password: "andrija",

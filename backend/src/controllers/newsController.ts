@@ -31,7 +31,9 @@ export const getNews = async (req: Request, res: Response) => {
             }
         },
         relations: { 
-            author: true
+            author: true,
+            tags: true,
+            category: true
         },
         skip: offset,
         take: limit,
@@ -57,7 +59,7 @@ export const getSingleNews = async (req: Request, res: Response) => {
                 last_name: true
             }
         },
-        relations: { author: true }
+        relations: { author: true, tags: true, category: true }
     })
 
     if(!news) {

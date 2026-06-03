@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-const SingleSubject = (props: any) => {
+const SingleCategory = (props: any) => {
     const id = props.category?.id ?? null;
 
     const [formData, setFormData] = useState({
@@ -64,4 +64,4 @@ const SingleSubject = (props: any) => {
     );
 };
 
-export default SingleSubject;
+export default SingleCategory;

@@ -92,7 +92,7 @@ const CategoryPage = () => {
                 id: result.category_id
             }
             
-            setCategories([createdCategory, ...categories].slice(0, 10))
+            setCategories([createdCategory, ...categories].slice(0, 5))
         } catch (error) {
             console.error("Greška prilikom azuriraznja kategorije:", error);
         }
