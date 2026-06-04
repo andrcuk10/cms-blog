@@ -1,8 +1,16 @@
-
 export type CategoryDTO = {
     id: string
     name: string
     description: string
+}
+
+export type UserDTO = {
+    id: string
+    email: string
+    first_name: string
+    last_name: string
+    role: string
+    status: boolean
 }
 
 export type Author = {
@@ -38,6 +46,11 @@ export interface CategoryListingPage {
     meta: metaData
 }
 
+export interface UserListingPage {
+    users: UserDTO[]
+    meta: metaData
+}
+
 export interface NewsListingPage {
     news: NewsDTO[]
     meta: metaData
@@ -53,4 +66,17 @@ export interface NewNewsRes {
 
 export interface SingleNewsRes {
     news: NewsDTO
+}
+
+export interface NewUserRes {
+    user_id: string
+}
+
+export interface SingleUserRes {
+    user: UserDTO
+}
+
+export interface UserUpdateRes {
+    user_id: string
+    status: boolean
 }

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import type { metaData, NewNewsRes, NewsDTO, NewsListingPage, SingleNewsRes } from "../response";
+import type { metaData, NewNewsRes, NewsDTO, NewsListingPage, SingleNewsRes } from "../utils/response";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import SingleNews from '../components/SingleNews'
 import PaginationComponent from "../components/PaginationComponent";
 import { formatDate } from "../utils/date";
-import type { CategoryDTO, CategoryListingPage } from "../response";
+import type { CategoryDTO, CategoryListingPage } from "../utils/response";
 import type { NewsProp } from "../utils/types";
 
 const CategoryPage = () => {

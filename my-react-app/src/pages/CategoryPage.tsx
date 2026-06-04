@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { CategoryDTO, CategoryListingPage, metaData, NewCategoryRes } from "../response";
+import type { CategoryDTO, CategoryListingPage, metaData, NewCategoryRes } from "../utils/response";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import SingleCategory from '../components/SingleCategory'
 import PaginationComponent from "../components/PaginationComponent";

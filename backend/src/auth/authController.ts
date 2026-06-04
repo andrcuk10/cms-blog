@@ -13,6 +13,10 @@ export const login = async (req: Request, res: Response) => {
         return res.status(400).json({ code: 'INCORRECT_CREDENTIALS' })
     }
 
+    if(!user.status) {
+        return res.status(400).json({ code: 'NOT_ALLOWED' })
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password)
     if(!isPasswordValid) {
         return res.status(400).json({ code: 'INCORRECT_CREDENTIALS' })

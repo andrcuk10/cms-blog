@@ -1,3 +1,5 @@
+import type { UserDTO } from "./response"
+
 export type NewsProp = {
     id: string
     title: string
@@ -5,3 +7,10 @@ export type NewsProp = {
     categoryId: string
     tags: string[]
 }
+
+export type PasswordType = {
+    password: string
+    confirm_password: string
+}
+
+export type CreateUserType = UserDTO & PasswordType
