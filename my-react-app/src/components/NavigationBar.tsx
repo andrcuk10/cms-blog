@@ -4,6 +4,7 @@ import {isAuthenticated, isAuthorized, loggedUser, logout} from "../auth.ts";
 import { useEffect, useState } from "react";
 import type { CategoryDTO, CategoryListingPage } from "../utils/response.ts";
 import { useToast } from "./ToastContext.tsx";
+import SearchBar from "./SearchBar.tsx";
 
 const NavigationBar = () => {
     const location = useLocation();  // Dobijamo trenutnu rutu
@@ -24,6 +25,8 @@ const NavigationBar = () => {
             <Container>
                 {/* Link do početne stranice, Brand je poput Home page-a */}
                 <Navbar.Brand as={Link} to="/public">RAF Novosti</Navbar.Brand>
+
+                <SearchBar></SearchBar>
 
                 {/* Dugme za prikazivanje menija na manjim ekranima */}
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

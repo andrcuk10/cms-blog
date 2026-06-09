@@ -13,6 +13,7 @@ import SingleNewsPage from "./pages/SingleNewsPage.tsx";
 import TagPage from "./pages/TagPage.tsx";
 import MostReacted from "./components/MostReacted.tsx";
 import { ToastProvider } from "./components/ToastContext.tsx";
+import SearchNewsPage from "./pages/SearchNewsPage.tsx";
 
 // Layz-loading je tehnika koja omogucuje da se komponente ucitavaju samo kada su potrebne, npr. kada se pogodi ruta
 // Ovo znaci da se komponente ucitavaju asinhrono, sto znaci da se ucitavaju u pozadini
@@ -58,6 +59,7 @@ function App() {
                               <Route path="/public/category/:id" element={<CategoryPublicPage/>}/>
                               <Route path="/public/news/:id" element={<SingleNewsPage/>}/>
                               <Route path="/public/tags/:id" element={<TagPage/>}/>
+                              <Route path="/public/news/search/:searchItem" element={<SearchNewsPage/>}/>
                               {/* PrivateRoute je komponenta koja proverava da li je korisnik prijavljen */}
                               <Route path="/" element={<PrivateRoute element={<CategoryPage/>}/>}/>
                               <Route path="/news" element={<PrivateRoute element={<NewsPage/>}/>}/>
