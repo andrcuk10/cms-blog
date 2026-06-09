@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { NewsDTO, Comment, NewCommentRes } from "../utils/response";
 import { Badge, Button, Card, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContext";
 
 const SingleNewsPage = () => {
     const { id } = useParams();
@@ -21,6 +23,8 @@ const SingleNewsPage = () => {
         return stored ? JSON.parse(stored) : {};
     });
 
+    const { showToast } = useToast();
+
     useEffect(() => {
         fetch(`http://localhost:3000/news/${id}`)
             .then((res) => res.json())
@@ -36,10 +40,10 @@ const SingleNewsPage = () => {
                             const updated = [...visitedNews, id];
                             localStorage.setItem("visitedNews", JSON.stringify(updated));
                         })
-                        .catch((err) => console.error("Greška pri beleženju posete:", err));
+                        .catch(() => showToast('Greška pri belezenju poseta', "danger"));
                 }
             })
-            .catch((err) => console.error("Greška pri učitavanju vesti:", err));
+            .catch(() => showToast('Greška pri učitavanju vesti', "danger"));
     }, [id]);
 
     const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -64,6 +68,8 @@ const SingleNewsPage = () => {
                 throw new Error(`Response status: ${response.status}`);
             }
 
+            showToast('Uspesno dodat komentar', "success")
+
             const result: NewCommentRes = await response.json()
             const newComment: Comment = {
                 id: result.comment_id,
@@ -79,7 +85,7 @@ const SingleNewsPage = () => {
             );
             setCommentForm({ author: "", text: "" });
         } catch(err) {
-            console.error("Greška pri dodavanju komentara:", err)
+            showToast('Greška pri dodavanju komentara', "danger")
         }
     };
 
@@ -108,7 +114,7 @@ const SingleNewsPage = () => {
                 return { ...prev, [type]: prev[type] + 1 };
             });
         } catch(err) {
-            console.error("Greška pri glasanju za vest:", err)
+            showToast('Greška pri glasanju za vest', "danger")
         }
     };
 
@@ -141,8 +147,13 @@ const SingleNewsPage = () => {
                 };
             });
         } catch(err) {
-            console.error("Greška pri glasanju komentara:", err)
+            showToast('Greška pri glasanju komentara', "danger")
         }
+    };
+
+    const navigate = useNavigate()
+    const handleTagClick = (id: string) => {
+        navigate(`/public/tags/${id}`);
     };
 
     if (!news) return <p>Učitavanje...</p>;
@@ -157,7 +168,7 @@ const SingleNewsPage = () => {
 
             <div className="mb-3">
                 {news.tags.map((tag) => (
-                    <Badge key={tag.id} bg="secondary" className="me-1">
+                    <Badge key={tag.id} bg="secondary" className="me-1" style={{ cursor: 'pointer' }} onClick={(e) => handleTagClick(tag.id)}>
                         {tag.name}
                     </Badge>
                 ))}

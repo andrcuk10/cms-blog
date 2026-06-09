@@ -87,6 +87,56 @@ export const getSingleNews = async (req: Request, res: Response) => {
     res.json({ news })
 }
 
+export const getMostReacted = async (req: Request, res: Response) => {
+    const news = await newsRepository
+        .createQueryBuilder("news")
+        .select(["news.id", "news.title"])
+        .addSelect("news.like + news.dislike", "reactions")
+        .orderBy("reactions", "DESC")
+        .limit(3)
+        .getMany();
+
+    res.json({ news });
+}
+
+export const filterByTag = async (req: Request, res: Response) => {
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const offset = req.skip;
+
+    const tagId = req.query.tag as string
+
+    const [news, total] = await newsRepository.findAndCount({ 
+        where: {
+            tags: {
+                id: tagId
+            }
+        },
+        select: {
+            author: {
+                id: true,
+                first_name: true,
+                last_name: true
+            }
+        },
+        relations: { author: true, tags: true, category: true, comments: true },
+        skip: offset,
+        take: limit,
+    })
+
+    if(!news) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    res.json({ 
+        news,
+        meta: {
+            total,
+            pageCount: Math.ceil(total / limit),
+            currentPage: parseInt(req.query.page as string, 10) || 1,
+        }
+    })
+}
+
 export const createNews = async (req: Request, res: Response) => {
     const user_id = req.userId
     const { title, text, category_id, tags } = req.body

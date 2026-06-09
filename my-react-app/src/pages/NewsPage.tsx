@@ -6,12 +6,15 @@ import PaginationComponent from "../components/PaginationComponent";
 import { formatDate } from "../utils/date";
 import type { CategoryDTO, CategoryListingPage } from "../utils/response";
 import type { NewsProp } from "../utils/types";
+import { useToast } from "../components/ToastContext";
 
 const CategoryPage = () => {
     const [news, setNews] = useState<NewsDTO[]>([]); // Lista vesti
     const [selectedNews, setSelectedNews] = useState<NewsDTO | null>(null); // Selektovana kategorija
     const [addNews, setAddNews] = useState<boolean>(false)
     const [categories, setCategories] = useState<CategoryDTO[]>([]);
+
+    const { showToast } = useToast();
 
     const [meta, setMeta] = useState<metaData | null>(null)
     
@@ -48,6 +51,8 @@ const CategoryPage = () => {
             
             const result: NewNewsRes = await response.json()
 
+            showToast('Uspesno azurirana vest', "success")
+
             const updatedNews = await fetchNews(result.news_id)
 
             setNews((prevNews) => {
@@ -56,7 +61,7 @@ const CategoryPage = () => {
                 return updatedNews ? [updatedNews, ...exists].slice(0, 5) : prevNews;
             });
         } catch (error) {
-            console.error("Greška prilikom azuriraznja vesti:", error);
+            showToast('Greška prilikom azuriraznja vesti', "danger")
         }
     }
 
@@ -73,11 +78,13 @@ const CategoryPage = () => {
             if(!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
+
+            showToast('Uspesno obrisana vest', "success")
             
             const newNews: NewsDTO[] = news.filter((n) => n.id !== nw.id)
             setNews(newNews)
         } catch (error) {
-            console.error("Greška prilikom azuriraznja kategorije:", error);
+            showToast('Greška prilikom brisanja vesti', "danger")
         }
     }
 
@@ -102,11 +109,12 @@ const CategoryPage = () => {
             }
 
             const result: NewNewsRes = await response.json()
+            showToast('Uspesno kreirana vest', "success")
             
             const createdNews = await fetchNews(result.news_id)
             if(createdNews) setNews([createdNews, ...news].slice(0, 5))
         } catch (error) {
-            console.error("Greška prilikom kreiranja vesti:", error);
+            showToast('Greška prilikom kreiranja vesti', "danger")
         }
     }
 
@@ -128,7 +136,7 @@ const CategoryPage = () => {
             setNews(result.news); // Postavljamo podatke u state
             setMeta(result.meta)
         } catch (error) {
-            console.error("Greška prilikom učitavanja kategorije:", error);
+            showToast('Greška prilikom ucitavanja vesti', "danger")
         }
     }
 

@@ -4,6 +4,7 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import PaginationComponent from "../components/PaginationComponent";
 import type { CreateUserType } from "../utils/types";
 import SingleUser from "../components/SingleUser";
+import { useToast } from "../components/ToastContext";
 
 const UserPage = () => {
     const [users, setUsers] = useState<UserDTO[]>([]); // Lista kategorija
@@ -11,6 +12,8 @@ const UserPage = () => {
     const [addUser, setAddUser] = useState<boolean>(false)
 
     const [meta, setMeta] = useState<metaData | null>(null)
+
+    const { showToast } = useToast();
     
     // Funkcija za skraćivanje teksta
     // const shortText = (text: string) => (text.length < 30 ? text : text.slice(0, 30) + "...");
@@ -42,6 +45,8 @@ const UserPage = () => {
             }
 
             const result: NewUserRes = await response.json()
+
+            showToast('Uspesno azuriran korisnik', "success")
             
             const updatedUser = await fetchUser(result.user_id)
 
@@ -51,12 +56,11 @@ const UserPage = () => {
                 return updatedUser ? [updatedUser, ...exists].slice(0, 5) : prevUsers;
             });
         } catch (error) {
-            console.error("Greška prilikom azuriranja korisnika:", error);
+            showToast('Greška prilikom azuriranja korisnika', "danger")
         }
     }
 
     const removeUser = async (user: UserDTO) => {
-        console.log('remove ', user)
         try {
             const response = await fetch(`http://localhost:3000/users/${user.id}/status`, {
                 method: 'GET',
@@ -72,6 +76,8 @@ const UserPage = () => {
 
             const result: UserUpdateRes = await response.json()
 
+            showToast('Uspesno obrisan korisnik', "success")
+
             user.status = result.status
             
             setUsers((prevUsers) => {
@@ -80,12 +86,11 @@ const UserPage = () => {
                 return [user, ...exists].slice(0, 5);
             });
         } catch (error) {
-            console.error("Greška prilikom azuriraznja kategorije:", error);
+            showToast('Greška prilikom birsanja korisnika', "danger")
         }
     }
 
     const createUser = async (user: CreateUserType) => {
-        console.log('create ', user)
         user.status = true
         try {
             const response = await fetch(`http://localhost:3000/users`, {
@@ -102,6 +107,8 @@ const UserPage = () => {
             }
 
             const result: NewUserRes = await response.json()
+
+            showToast('Uspesno kreiran korisnik', "success")
             
             const createdUser: UserDTO = {
                 email: user.email,
@@ -114,7 +121,7 @@ const UserPage = () => {
             
             setUsers([createdUser, ...users].slice(0, 5))
         } catch (error) {
-            console.error("Greška prilikom dodavanja korisnika:", error);
+            showToast('Greška prilikom dodavanja korisnika', "danger")
         }
     }
 
@@ -137,7 +144,7 @@ const UserPage = () => {
             setUsers(result.users); // Postavljamo podatke u state
             setMeta(result.meta)
         } catch (error) {
-            console.error("Greška prilikom učitavanja kategorije:", error);
+            showToast('Greška prilikom ucitavanja korisnika', "danger")
         }
     }
 

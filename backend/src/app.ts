@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'reflect-metadata'
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes'
+import tagRoutes from './routes/tagRoutes'
 import categoryRoutes from './routes/categoryRoutes'
 import newsRoutes from './routes/newsRoutes'
 import { AppDataSource } from './data-source'
@@ -23,6 +24,7 @@ AppDataSource.initialize()
         app.use('/auth', authRoutes)
         app.use('/categories', categoryRoutes)
         app.use('/news', newsRoutes)
+        app.use('/tags', tagRoutes)
 
         app.use(errorHandler)
         

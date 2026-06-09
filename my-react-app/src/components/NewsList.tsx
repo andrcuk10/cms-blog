@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import type{ NewsDTO, NewsListingPage } from "../utils/response";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "./ToastContext";
 
 const NewsList = ({ url }: { url: string }) => {
     const [news, setNews] = useState<NewsDTO[]>([]);
     const navigate = useNavigate()
+    const { showToast } = useToast();
 
     useEffect(() => {
-        console.log(url)
         fetch(url)
             .then((res) => res.json())
             .then((data: NewsListingPage) => setNews(data.news))
-            .catch(err => console.error('Greska prilikom dohvatanja vesti: ', err))
+            .catch(() => showToast('Greska prilikom dohvatanja vesti', 'danger'))
     }, []);
 
     const handleCardClick = (id: string) => {

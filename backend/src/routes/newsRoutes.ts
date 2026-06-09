@@ -1,5 +1,5 @@
 import express from 'express'
-import { createNews, deleteNews, getNews, getSingleNews, mostViewed, updateNews, likeNews, dislikeNews, visitNews, createComment, likeComment, dislikeComment } from '../controllers/newsController'
+import { createNews, deleteNews, getNews, filterByTag, getSingleNews, getMostReacted, mostViewed, updateNews, likeNews, dislikeNews, visitNews, createComment, likeComment, dislikeComment } from '../controllers/newsController'
 import { authenticate } from '../auth/authMiddleware'
 import { authorizeNews } from '../middlewares/authorizeUser'
 import { validate } from '../middlewares/validate'
@@ -11,6 +11,8 @@ const router = express.Router()
 
 router.get('/', catchAsync(getNews))
 router.get('/most-viewed', catchAsync(mostViewed))
+router.get('/tags', catchAsync(filterByTag))
+router.get('/most-reacted', catchAsync(getMostReacted))
 router.get('/:id', catchAsync(getSingleNews))
 router.post('/', authenticate, validate(newsSchema), catchAsync(createNews))
 router.post('/:id/visit', catchAsync(visitNews))
@@ -22,5 +24,6 @@ router.delete('/:id', authenticate, authorizeNews, catchAsync(deleteNews))
 router.post('/:id/comments', validate(commentSchema), catchAsync(createComment))
 router.post('/comments/:id/like', catchAsync(likeComment))
 router.post('/comments/:id/dislike', catchAsync(dislikeComment))
+
 
 export default router

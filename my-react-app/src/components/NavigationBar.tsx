@@ -3,17 +3,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {isAuthenticated, isAuthorized, loggedUser, logout} from "../auth.ts";
 import { useEffect, useState } from "react";
 import type { CategoryDTO, CategoryListingPage } from "../utils/response.ts";
+import { useToast } from "./ToastContext.tsx";
 
 const NavigationBar = () => {
     const location = useLocation();  // Dobijamo trenutnu rutu
     const navigate = useNavigate();  // Funkcija za navigaciju između stranica
 
     const [categories, setCategories] = useState<CategoryDTO[]>([]);
+    const { showToast } = useToast();
 
     useEffect(() => {
         fetch("http://localhost:3000/categories?limit=25&page=1")
             .then((res) => res.json())
-            .then((data: CategoryListingPage) => setCategories(data.categories));
+            .then((data: CategoryListingPage) => setCategories(data.categories))
+            .catch(() => showToast('Greška pri učitavanja kategorije', "danger"))
     }, []);
 
     return (

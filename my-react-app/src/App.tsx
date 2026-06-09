@@ -10,6 +10,9 @@ import HomePage from "./pages/HomePage.tsx";
 import MostViewedPage from "./pages/MostViewedPage.tsx";
 import CategoryPublicPage from "./pages/CategoryPublicPage.tsx";
 import SingleNewsPage from "./pages/SingleNewsPage.tsx";
+import TagPage from "./pages/TagPage.tsx";
+import MostReacted from "./components/MostReacted.tsx";
+import { ToastProvider } from "./components/ToastContext.tsx";
 
 // Layz-loading je tehnika koja omogucuje da se komponente ucitavaju samo kada su potrebne, npr. kada se pogodi ruta
 // Ovo znaci da se komponente ucitavaju asinhrono, sto znaci da se ucitavaju u pozadini
@@ -28,11 +31,14 @@ const PrivateRoute = ({element}: PrivateRouteProps) => {
   return isAuthenticated() ? element : <Navigate to="/login"/>;
 };
 
+const isPublic = location.pathname.startsWith("/public");
+
 function App() {
 
   return (
     <>
-          <div className="App">
+      <ToastProvider>
+        <div className="App">
                 <Router>
                   <div className="app-container">
                       <NavigationBar/>
@@ -51,6 +57,7 @@ function App() {
                               <Route path="/public/most-viewed" element={<MostViewedPage/>}/>
                               <Route path="/public/category/:id" element={<CategoryPublicPage/>}/>
                               <Route path="/public/news/:id" element={<SingleNewsPage/>}/>
+                              <Route path="/public/tags/:id" element={<TagPage/>}/>
                               {/* PrivateRoute je komponenta koja proverava da li je korisnik prijavljen */}
                               <Route path="/" element={<PrivateRoute element={<CategoryPage/>}/>}/>
                               <Route path="/news" element={<PrivateRoute element={<NewsPage/>}/>}/>
@@ -58,9 +65,15 @@ function App() {
                             </Routes>
                         </Suspense>
                       </main>
+                      {isPublic && (
+                        <aside style={{ width: "250px", flexShrink: 0 }}>
+                            <MostReacted />
+                        </aside>
+                      )}
                   </div>
                 </Router>
             </div>
+      </ToastProvider>
     </>
   )
 }

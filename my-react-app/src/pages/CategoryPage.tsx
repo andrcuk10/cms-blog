@@ -3,6 +3,7 @@ import type { CategoryDTO, CategoryListingPage, metaData, NewCategoryRes } from 
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import SingleCategory from '../components/SingleCategory'
 import PaginationComponent from "../components/PaginationComponent";
+import { useToast } from "../components/ToastContext";
 
 const CategoryPage = () => {
     const [categories, setCategories] = useState<CategoryDTO[]>([]); // Lista kategorija
@@ -10,6 +11,7 @@ const CategoryPage = () => {
     const [addCategory, setAddCategory] = useState<boolean>(false)
 
     const [meta, setMeta] = useState<metaData | null>(null)
+    const { showToast } = useToast();
     
     // Funkcija za skraćivanje teksta
     const shortText = (text: string) => (text.length < 30 ? text : text.slice(0, 30) + "...");
@@ -38,13 +40,15 @@ const CategoryPage = () => {
             if(!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
+
+            showToast('Uspesno azurirana kategorija', "success")
             
             const updatedCategories = categories.map((c) => 
                 c.id === category.id ? category : c
             )
             setCategories(updatedCategories)
         } catch (error) {
-            console.error("Greška prilikom azuriraznja kategorije:", error);
+            showToast('Greška prilikom azuriraznja kategorije', 'danger')
         }
     }
 
@@ -61,11 +65,13 @@ const CategoryPage = () => {
             if(!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
+
+            showToast('Uspesno obrisana kategorija', "success")
             
             const newCategories = categories.filter((c) => c.id !== category.id)
             setCategories(newCategories)
         } catch (error) {
-            console.error("Greška prilikom azuriraznja kategorije:", error);
+            showToast('Greška prilikom brisanja kategorije', 'danger') 
         }
     }
 
@@ -85,6 +91,8 @@ const CategoryPage = () => {
             }
 
             const result: NewCategoryRes = await response.json()
+
+            showToast('Uspesno kreirana kategorija', "success")
             
             const createdCategory: CategoryDTO = {
                 name: category.name,
@@ -94,7 +102,7 @@ const CategoryPage = () => {
             
             setCategories([createdCategory, ...categories].slice(0, 5))
         } catch (error) {
-            console.error("Greška prilikom azuriraznja kategorije:", error);
+            showToast('Greška prilikom kreiranja kategorije', 'danger')
         }
     }
 
@@ -116,7 +124,7 @@ const CategoryPage = () => {
             setCategories(result.categories); // Postavljamo podatke u state
             setMeta(result.meta)
         } catch (error) {
-            console.error("Greška prilikom učitavanja kategorije:", error);
+            showToast('Greška prilikom učitavanja kategorije', 'danger')
         }
     }
 

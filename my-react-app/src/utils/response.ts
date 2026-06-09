@@ -76,6 +76,10 @@ export interface SingleCategoryRes {
     category: CategoryDTO
 }
 
+export interface SingleTagRes {
+    tag: Tag
+}
+
 export interface NewCommentRes {
     comment_id: string
 }
