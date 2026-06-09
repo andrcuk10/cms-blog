@@ -4,6 +4,7 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import SingleCategory from '../components/SingleCategory'
 import PaginationComponent from "../components/PaginationComponent";
 import { useToast } from "../components/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 const CategoryPage = () => {
     const [categories, setCategories] = useState<CategoryDTO[]>([]); // Lista kategorija
@@ -12,6 +13,7 @@ const CategoryPage = () => {
 
     const [meta, setMeta] = useState<metaData | null>(null)
     const { showToast } = useToast();
+    const navigate = useNavigate()
     
     // Funkcija za skraćivanje teksta
     const shortText = (text: string) => (text.length < 30 ? text : text.slice(0, 30) + "...");
@@ -128,6 +130,10 @@ const CategoryPage = () => {
         }
     }
 
+    const handleCardClick = (id: string) => {
+        navigate(`/public/category/${id}`);
+    };
+
     // Učitavanje kategorije pri prvom renderovanju
     useEffect(() => {
         fetchPage(1);
@@ -161,7 +167,7 @@ const CategoryPage = () => {
                         <tbody>
                         {categories.map((category: CategoryDTO) => (
                             <tr key={category.id}>
-                                <td style={{ cursor: "pointer" }}>{category.name}</td>
+                                <td style={{ cursor: "pointer" }} onClick={(e) => handleCardClick(category.id)}>{category.name}</td>
                                 <td>{shortText(category.description)}</td>
                                 <td>{<Button variant="info" onClick={() => setSelectedCategory(category)}>Update</Button>}</td>
                                 <td>{<Button variant="danger" onClick={() => removeCategory(category)}>Remove</Button>}</td>

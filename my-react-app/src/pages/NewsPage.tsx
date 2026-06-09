@@ -7,6 +7,7 @@ import { formatDate } from "../utils/date";
 import type { CategoryDTO, CategoryListingPage } from "../utils/response";
 import type { NewsProp } from "../utils/types";
 import { useToast } from "../components/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 const CategoryPage = () => {
     const [news, setNews] = useState<NewsDTO[]>([]); // Lista vesti
@@ -15,6 +16,7 @@ const CategoryPage = () => {
     const [categories, setCategories] = useState<CategoryDTO[]>([]);
 
     const { showToast } = useToast();
+    const navigate = useNavigate()
 
     const [meta, setMeta] = useState<metaData | null>(null)
     
@@ -163,6 +165,10 @@ const CategoryPage = () => {
         }
     }
 
+    const handleCardClick = (id: string) => {
+        navigate(`/public/news/${id}`);
+    };
+
     // Učitavanje kategorije pri prvom renderovanju
     useEffect(() => {
         fetchPage(1);
@@ -203,7 +209,7 @@ const CategoryPage = () => {
                         <tbody>
                             {news.map((n: NewsDTO) => (
                                 <tr key={n.id}>
-                                    <td style={{ cursor: "pointer" }}>{shortText(n.title)}</td>
+                                    <td style={{ cursor: "pointer" }} onClick={(e) => handleCardClick(n.id)}>{shortText(n.title)}</td>
                                     <td>{shortText(`${n.author.first_name} ${n.author.last_name}`)}</td>
                                     <td>{formatDate(n.createdAt)}</td>
                                     <td>{<Button variant="info" onClick={() => setSelectedNews(n)}>Update</Button>}</td>
