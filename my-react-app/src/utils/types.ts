@@ -13,4 +13,10 @@ export type PasswordType = {
     confirm_password: string
 }
 
+export type CommentType = {
+    id: string
+    author: string
+    text: string
+}
+
 export type CreateUserType = UserDTO & PasswordType

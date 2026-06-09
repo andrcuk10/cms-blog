@@ -4,25 +4,42 @@ import { News } from "../entities/News";
 import { User } from "../entities/User";
 import { Category } from "../entities/Category";
 import { getTags } from "./tagsController";
-import { Like } from "typeorm";
+import { Like, MoreThanOrEqual } from "typeorm";
+import { Comment } from "../entities/Comment";
 
 const newsRepository = AppDataSource.getRepository(News)
 const userRepository = AppDataSource.getRepository(User)
 const categoryRepository = AppDataSource.getRepository(Category)
+const commentRepository = AppDataSource.getRepository(Comment)
 
 export const getNews = async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string, 10) || 10;
     const offset = req.skip;
 
     const search = req.query.search
-    const whereCondition: any[] = []
-    if(search) {
-        whereCondition.push({ title: Like(`%${search}%`) })
-        whereCondition.push({ title: Like(`%${search}%`) })
+    const category = req.query.categoryId
+
+    let whereCondition: any = [];
+
+    if (search && category) {
+        whereCondition = [
+            { title: Like(`%${search}%`), category: { id: category } },
+            { text: Like(`%${search}%`), category: { id: category } },
+        ];
+    } else if (search) {
+        whereCondition = [
+            { title: Like(`%${search}%`) },
+            { text: Like(`%${search}%`) },
+        ];
+    } else if (category) {
+        whereCondition = { category: { id: category } };
     }
 
     const [news, total] = await newsRepository.findAndCount({
         where: whereCondition,
+        order: {
+            createdAt: "DESC"
+        },
         select: {
             author: {
                 id: true,
@@ -33,7 +50,8 @@ export const getNews = async (req: Request, res: Response) => {
         relations: { 
             author: true,
             tags: true,
-            category: true
+            category: true,
+            comments: true
         },
         skip: offset,
         take: limit,
@@ -59,7 +77,7 @@ export const getSingleNews = async (req: Request, res: Response) => {
                 last_name: true
             }
         },
-        relations: { author: true, tags: true, category: true }
+        relations: { author: true, tags: true, category: true, comments: true }
     })
 
     if(!news) {
@@ -121,7 +139,8 @@ export const deleteNews = async (req: Request, res: Response) => {
     const news = await newsRepository.findOne({ 
         where: { id: req.params.id as string },
         relations: {
-            tags: true
+            tags: true,
+            comments: true
         }
     })
 
@@ -130,7 +149,122 @@ export const deleteNews = async (req: Request, res: Response) => {
     }
 
     news.tags = []
+    news.comments = []
     await newsRepository.remove(news)
 
     res.status(204).json({})
+}
+
+export const createComment = async (req: Request, res: Response) => {
+    const { author, text } = req.body
+
+    const news = await newsRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!news) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    const comment = commentRepository.create({ author, text })
+    comment.news = news
+    const savedComment = await commentRepository.save(comment)
+
+    res.status(201).json({ comment_id: savedComment.id })
+}
+
+export const likeComment = async (req: Request, res: Response) => {
+    const comment = await commentRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!comment) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    comment.like = ++comment.like
+    const savedComment = await commentRepository.save(comment)
+
+    res.status(201).json({ comment_id: savedComment.id, like: savedComment.like })
+}
+
+export const dislikeComment = async (req: Request, res: Response) => {
+    const comment = await commentRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!comment) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    comment.dislike = ++comment.dislike
+    const savedComment = await commentRepository.save(comment)
+
+    res.status(201).json({ comment_id: savedComment.id, dislike: savedComment.dislike })
+}
+
+export const visitNews = async (req: Request, res: Response) => {
+    const news = await newsRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!news) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    news.visits = ++news.visits
+    const savedNews = await newsRepository.save(news)
+
+    res.status(201).json({ comment_id: savedNews.id, visit: savedNews.visits })
+}
+
+export const likeNews = async (req: Request, res: Response) => {
+    const news = await newsRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!news) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    news.like = ++news.like
+    const savedNews = await newsRepository.save(news)
+
+    res.status(201).json({ news_id: savedNews.id, like: savedNews.like })
+}
+
+export const dislikeNews = async (req: Request, res: Response) => {
+    const news = await newsRepository.findOne({ 
+        where: { id: req.params.id as string },
+    })
+
+    if(!news) {
+        return res.status(400).json({ code: 'NO_SUCH_ENTITY' })
+    }
+
+    news.dislike = ++news.dislike
+    const savedNews = await newsRepository.save(news)
+
+    res.status(201).json({ news_id: savedNews.id, dislike: savedNews.dislike })
+}
+
+export const mostViewed = async (req: Request, res: Response) => {
+    console.log('USAO U MOSTVIEWED')
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const mostReadNews = await newsRepository.find({
+        where: {
+            createdAt: MoreThanOrEqual(thirtyDaysAgo),
+        },
+        order: {
+            visits: 'DESC',
+        },
+        relations: {
+            category: true
+        },
+        take: 10,
+    });
+
+    return res.json({ news: mostReadNews })
 }

@@ -21,6 +21,12 @@ export class News {
     @Column({ default: 0 })
     visits: number
 
+    @Column({ default: 0 })
+    like: number
+
+    @Column({ default: 0 })
+    dislike: number
+
     @ManyToOne(() => User, (author) => author.news, {
         cascade: true
     })

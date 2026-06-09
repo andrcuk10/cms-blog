@@ -24,15 +24,27 @@ export type Tag = {
     name: string
 }
 
+export type Comment = {
+    id: string;
+    author: string;
+    text: string;
+    createdAt: string;
+    like: number;
+    dislike: number;
+};
+
 export type NewsDTO = {
     id: string
     title: string
     text: string
     createdAt: string
     visits: number
+    like: number
+    dislike: number
     author: Author
     tags: Tag[]
     category: CategoryDTO
+    comments: Comment[]
 }
 
 export type metaData = {
@@ -58,6 +70,14 @@ export interface NewsListingPage {
 
 export interface NewCategoryRes {
     category_id: string
+}
+
+export interface SingleCategoryRes {
+    category: CategoryDTO
+}
+
+export interface NewCommentRes {
+    comment_id: string
 }
 
 export interface NewNewsRes {

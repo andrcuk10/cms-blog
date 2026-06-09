@@ -6,6 +6,10 @@ import {isAuthenticated, isAuthorized} from "./auth.ts";
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom"
 import {Spinner} from "react-bootstrap"
 import UsersPage from "./pages/UsersPage.tsx";
+import HomePage from "./pages/HomePage.tsx";
+import MostViewedPage from "./pages/MostViewedPage.tsx";
+import CategoryPublicPage from "./pages/CategoryPublicPage.tsx";
+import SingleNewsPage from "./pages/SingleNewsPage.tsx";
 
 // Layz-loading je tehnika koja omogucuje da se komponente ucitavaju samo kada su potrebne, npr. kada se pogodi ruta
 // Ovo znaci da se komponente ucitavaju asinhrono, sto znaci da se ucitavaju u pozadini
@@ -43,6 +47,10 @@ function App() {
                             <Routes>
                               {/* Kada se pogodi ruta prikazuje se komponenta (element) koja odgovara ruti */}
                               <Route path="/login" element={<LoginPage/>}/>
+                              <Route path="/public" element={<HomePage/>}/>
+                              <Route path="/public/most-viewed" element={<MostViewedPage/>}/>
+                              <Route path="/public/category/:id" element={<CategoryPublicPage/>}/>
+                              <Route path="/public/news/:id" element={<SingleNewsPage/>}/>
                               {/* PrivateRoute je komponenta koja proverava da li je korisnik prijavljen */}
                               <Route path="/" element={<PrivateRoute element={<CategoryPage/>}/>}/>
                               <Route path="/news" element={<PrivateRoute element={<NewsPage/>}/>}/>

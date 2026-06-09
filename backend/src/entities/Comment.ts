@@ -15,6 +15,12 @@ export class Comment {
     @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
     createdAt: Date
 
+    @Column({default: 0})
+    like: number
+
+    @Column({default: 0})
+    dislike: number
+
     @ManyToOne(() => News, (news) => news.comments)
     news: Relation<News>
 }
